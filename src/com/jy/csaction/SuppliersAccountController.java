@@ -48,7 +48,7 @@ public class SuppliersAccountController {
 
 	/**
 	 * 跳转供应商结算页面
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping(params = "method=getSuppliers")
@@ -91,15 +91,6 @@ public class SuppliersAccountController {
 				suppliersEndAddress, user);
 		int count = ss.getSupplierCount(suppliersName, suppliersSendTime,
 				suppliersEndTime, suppliersEndAddress, user);
-		/*for (JySuppliers jySuppliers : list) {
-
-			if (jySuppliers.getClearing_state().equals("0")) {
-				jySuppliers.setClearing_state("1");
-			} else {
-				jySuppliers.setClearing_state("0");
-			}
-
-		}*/
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("total", count);
 		map.put("rows", list);

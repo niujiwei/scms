@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy.dao.DriverAccountDao">
+
+	<sql id="Driver_Account_sql">
+		<if test="startTime!=null and startTime!=''">
+			AND t_order.send_time &gt;=#{startTime}
+		</if>
+		<if test="endTime!=null and endTime!=''">
+			AND t_order.send_time &lt;=#{endTime}
+		</if>
+		<if test="driver_name!=null and driver_name!=''">
+			AND t_driver.driver_name LIKE '%${driver_name}%'
+		</if>
+		<if test="driver_phone!=null and driver_phone!=''">
+			AND t_driver.driver_phone LIKE '%${driver_phone}%'
+		</if>
+
+	</sql>
+	<select id="getDriverAccountInfo" resultType="DriverAccount">
+	SELECT t_driver.*, count(t_order.shiping_order_id) as driver_count ,
+	min(t_order.send_time) min_send_time ,
+	max(t_order.send_time) max_send_time,
+	sum(t_order.goods_num) driver_goods_num,
+	sum(t_order.goods_vol) driver_Goods_Vol,
+	sum(t_order.trade_agency) driverTradeAgency,
+	SUM( t_order.upstairs_fee) driverUpstairsFee,
+	SUM(t_order.deliver_fee) driverDeliverFee,
+	SUM(t_order.added_fee) driverAddedFee,
+	sum(t_order.other_fee) driverOtherFee,
+	sum(t_order.transport_pay) driverTransportPay,
+	SUM(t_order.trade_agency) driverSum,
+	SUM(t_order.goods_weight) driverGoodsWeight
+	FROM jy_driver_info t_driver
+	LEFT JOIN jy_drivertoorder t_toorder ON t_driver.driver_id = t_toorder.driver_id
+	LEFT JOIN jy_shiping_order t_order on t_order.shiping_order_id = t_toorder.order_id
+	<where>
+		<include refid="Driver_Account_sql"/>
+	</where>
+	GROUP BY t_driver.driver_id;
+</select>
+
+	<select id="otherGetDriverAccountInfo" resultType="DriverAccount">
+		SELECT t_driver.*, count(t_order.shiping_order_id) as driver_count ,
+		min(t_order.send_time) min_send_time ,
+		max(t_order.send_time) max_send_time,
+		sum(t_order.goods_num) driver_goods_num,
+		sum(t_order.goods_vol) driver_Goods_Vol,
+		sum(t_order.trade_agency) driverTradeAgency,
+		SUM( t_order.upstairs_fee) driverUpstairsFee,
+		SUM(t_order.deliver_fee) driverDeliverFee,
+		SUM(t_order.added_fee) driverAddedFee,
+		sum(t_order.other_fee) driverOtherFee,
+		sum(t_order.transport_pay) driverTransportPay,
+		SUM(t_order.trade_agency) driverSum,
+		SUM(t_order.goods_weight) driverGoodsWeight
+		FROM jy_driver_info t_driver
+		LEFT JOIN jy_drivertoorder t_toorder ON t_driver.driver_id = t_toorder.driver_id
+		LEFT JOIN jy_shiping_order t_order on t_order.shiping_order_id = t_toorder.order_id
+		<where>
+			AND  t_order.send_mechanism in (SELECT customer_name FROM jy_customer where customer_id=#{customer_id})
+			<include refid="Driver_Account_sql"/>
+		</where>
+		GROUP BY t_driver.driver_id;
+	</select>
+
+	<select id="driverGetDriverAccountInfo" resultType="DriverAccount">
+		SELECT t_driver.*, count(t_order.shiping_order_id) as driver_count ,
+		min(t_order.send_time) min_send_time ,
+		max(t_order.send_time) max_send_time,
+		sum(t_order.goods_num) driver_goods_num,
+		sum(t_order.goods_vol) driver_Goods_Vol,
+		sum(t_order.trade_agency) driverTradeAgency,
+		SUM( t_order.upstairs_fee) driverUpstairsFee,
+		SUM(t_order.deliver_fee) driverDeliverFee,
+		SUM(t_order.added_fee) driverAddedFee,
+		sum(t_order.other_fee) driverOtherFee,
+		sum(t_order.transport_pay) driverTransportPay,
+		SUM(t_order.trade_agency) driverSum,
+		SUM(t_order.goods_weight) driverGoodsWeight
+		FROM jy_driver_info t_driver
+		LEFT JOIN jy_drivertoorder t_toorder ON t_driver.driver_id = t_toorder.driver_id
+		LEFT JOIN jy_shiping_order t_order on t_order.shiping_order_id = t_toorder.order_id
+		<where>
+			AND t_driver.driver_id=#{driver_id}
+			<include refid="Driver_Account_sql"/>
+
+		</where>
+		GROUP BY t_driver.driver_id;
+	</select>
+
+	<select id="getDriverAccountCount" resultType="int">
+	SELECT count(1) FROM jy_driver_info t_driver
+	<where>
+		<if test="driver_name!=null and driver_name!=''">
+			AND t_driver.driver_name LIKE '%${driver_name}%'
+		</if>
+		<if test="driver_phone!=null and driver_phone!=''">
+			AND t_driver.driver_phone LIKE '%${driver_phone}%'
+		</if>
+	</where>
+</select>
+
+	<select id="otherGetDriverAccountCount" resultType="int">
+		SELECT count(1) FROM jy_driver_info t_driver
+		<where>
+			AND  t_order.send_mechanism in (SELECT customer_name FROM jy_customer where customer_id=#{customer_id})
+			<if test="driver_name!=null and driver_name!=''">
+				AND t_driver.driver_name LIKE '%${driver_name}%'
+			</if>
+			<if test="driver_phone!=null and driver_phone!=''">
+				AND t_driver.driver_phone LIKE '%${driver_phone}%'
+			</if>
+		</where>
+	</select>
+
+	<select id="driverGetDriverAccountCount" resultType="int">
+		SELECT count(1) FROM jy_driver_info t_driver
+		<where>
+			AND t_driver.driver_id=#{driver_id}
+			<if test="driver_name!=null and driver_name!=''">
+				AND t_driver.driver_name LIKE '%${driver_name}%'
+			</if>
+			<if test="driver_phone!=null and driver_phone!=''">
+				AND t_driver.driver_phone LIKE '%${driver_phone}%'
+			</if>
+		</where>
+	</select>
+	<sql id="driver_account_order_sql">
+		<if test="shiping_order_num!=null and shiping_order_num!=''">
+			AND t_order.shiping_order_num like '%${shiping_order_num}%'
+		</if>
+		<if test="end_address!=null and end_address!=''">
+			AND t_order.end_address = #{end_address}
+		</if>
+		<if test="custom_name!=null and custom_name!=''">
+			AND t_order.custom_name = #{custom_name}
+		</if>
+		<if test="receipt_name!=null and receipt_name!=''">
+			AND t_order.receipt_name = #{receipt_name}
+		</if>
+		<if test="receipt_tel!=null and receipt_tel!=''">
+			AND t_order.receipt_tel = #{receipt_tel}
+		</if>
+		<if test="send_mechanism!=null and send_mechanism!=''">
+			AND t_order.send_mechanism = #{send_mechanism}
+		</if>
+		<if test="send_time!=null and send_time!=''">
+			AND t_order.send_time = #{send_time}
+		</if>
+
+		<if test="min_send_time!=null and min_send_time!=''">
+
+			AND t_order.send_time &gt;=#{min_send_time}
+		</if>
+		<if test="max_send_time!=null and max_send_time!=''">
+			And t_order.send_time &lt;=#{max_send_time}
+		</if>
+		<if test="shipperorder_id!=null and shipperorder_id!=''">
+			and t_order.shiping_order_goid like '%${shipperorder_id}%'
+		</if>
+		<if test="clearing_state!=null and clearing_state!=''">
+			and t_order.clearing_state = #{clearing_state}
+		</if>
+	</sql>
+	<select id="getDriverAccountOrder" resultType="ShippingOrder">
+		SELECT
+	t_order.*
+FROM
+	jy_shiping_order t_order
+LEFT JOIN jy_drivertoorder t_toorder ON t_order.shiping_order_id= t_toorder.order_id
+WHERE t_toorder.driver_id =#{driverId}
+
+
+<include refid="driver_account_order_sql"/>
+
+	</select>
+
+
+	<select id="getDriverAccountOrderCount" resultType="int">
+SELECT
+	COUNT(1)
+FROM
+	jy_shiping_order t_order
+LEFT JOIN jy_drivertoorder t_toorder ON t_order.shiping_order_id= t_toorder.order_id
+WHERE t_toorder.driver_id =#{driverId}
+		<include refid="driver_account_order_sql"/>
+	</select>
+
+	<select id="getOutPutDriverAccountOrder" resultType="ShippingOrder">
+		SELECT
+	t_order.*
+FROM
+	jy_shiping_order t_order
+LEFT JOIN jy_drivertoorder t_toorder ON t_order.shiping_order_id= t_toorder.order_id
+WHERE t_toorder.driver_id =#{driverId}
+		<if test="min_send_time!=null and min_send_time!=''">
+
+			AND t_order.send_time &gt;=#{min_send_time}
+		</if>
+		<if test="max_send_time!=null and max_send_time!=''">
+			And t_order.send_time &lt;=#{max_send_time}
+		</if>
+		<if test="send_mechanism!=null and send_mechanism!=''">
+			AND t_order.send_mechanism = #{send_mechanism}
+		</if>
+	</select>
+</mapper>
