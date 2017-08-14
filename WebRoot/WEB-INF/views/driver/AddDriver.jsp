@@ -124,6 +124,7 @@
         var cartype=$("#carType").combobox('getText');
 		$("#driver_cartype").val(cartype);
         $("#driver_address").val(poin+city+county);
+
         if($("#carid").val()==""){
             $pjq.messager.alert('新增信息', '供应商信息未填', 'info');
         }else if(poin==""){

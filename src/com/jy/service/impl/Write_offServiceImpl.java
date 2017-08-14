@@ -14,7 +14,7 @@ import com.jy.service.Write_offService;
 @Component
 public class Write_offServiceImpl implements Write_offService {
 
-	@Resource
+
 	private  Write_offDAO wirte_offDAO;
 	
 	public List<ShippingOrder> getChangeOrderInfo(int rows,int page,String shiping_order_num,String updatetime,String check_time) {
