@@ -1012,7 +1012,7 @@ WHERE jci.citye_parent_id=#{id}
 		)values
 		<foreach collection="list" index="index" item="item"
 				 separator=",">
-		(#{item.id},#{item.username},#{item.password},#{item.realName},#{item.did},null,"1",#{item.flag},SYSDATE(),null,null,#{item.driver_id},#{item.suppliers_id},#{item.user_province},#{item.user_city},#{item.user_county},#{item.user_address},#{item.customer_id});
+		(#{item.id},#{item.username},#{item.password},#{item.realName},#{item.did},null,"1",#{item.flag},SYSDATE(),null,null,#{item.driver_id},#{item.suppliers_id},#{item.user_province},#{item.user_city},#{item.user_county},#{item.user_address},#{item.customer_id})
 		</foreach>
 	</insert>
 
